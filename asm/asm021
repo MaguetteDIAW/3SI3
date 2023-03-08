@@ -1,0 +1,39 @@
+lobal _start
+
+section .data
+        message db "1337",0x0A
+section .bss
+        buf : resb 4
+section .text
+
+_start:
+        mov eax, 4 
+        mov ebx, 1 
+        mov ecx, message 
+        mov edx, 5
+        int 0x80
+
+        ;read stdin
+        mov eax, 3
+        mov ebx, 0
+        mov ecx, buf
+        mov edx, 3 ; taile du msg
+        int 0X80 ;(syscall ou interuption)
+
+        ;check if input is 42
+        mov eax, [buf]
+        cmp eax, 42
+        jne return_1
+
+        ;if input is 42, return 0
+        xor eax, eax
+        jmp exit
+
+return_1:
+        ;otherwise, return 1
+        mov eax, 1
+        mov ebx, 1
+        int 0x80
+
+exit:
+        int 0x80
